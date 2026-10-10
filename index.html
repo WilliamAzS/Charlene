@@ -53,6 +53,11 @@ button:focus-visible{outline:4px solid var(--blue);outline-offset:3px}
 #rot .ph{font-size:80px;animation:turn 2s ease-in-out infinite}
 @keyframes turn{0%,20%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
 @media (orientation:portrait){#rot:not(.hide){display:flex}}
+.mem{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;width:100%;max-width:640px}
+.mc{height:clamp(60px,20vh,96px);font-size:2rem;padding:0;background:var(--blue);border-radius:16px}
+.mc.up{background:#fff}.mc.ok{background:var(--mint)}
+#qa button:disabled{opacity:.6}
+@keyframes shake{0%,100%{transform:rotate(0)}20%{transform:rotate(-25deg)}40%{transform:rotate(25deg)}60%{transform:rotate(-18deg)}80%{transform:rotate(18deg)}}
 @media (max-height:480px){
  body{font-size:16px}h1{font-size:2.4rem}h2{font-size:1.3rem}
  .page{gap:8px;padding:2px 16px 8px}.out{min-height:56px;padding:10px;font-size:1.05rem}
@@ -112,6 +117,35 @@ button:focus-visible{outline:4px solid var(--blue);outline-offset:3px}
 </div></section>
 
 <section class="page"><div class="wrap">
+<h2>Match the pairs 🧩</h2>
+<p class="hint" id="memMsg">Find all 5 pairs.</p>
+<div class="mem" id="mem"></div>
+<div class="row"><button id="shuf" style="background:var(--blue)">Shuffle</button><button class="next" hidden>Next ➜</button></div>
+</div></section>
+
+<section class="page"><div class="wrap">
+<h2>Love quiz 💘</h2>
+<p id="qq" style="font-size:1.25rem"></p>
+<div class="row" id="qa"></div>
+<div class="out" id="qr">Every answer is right, promise.</div>
+<button class="next" hidden>Next ➜</button>
+</div></section>
+
+<section class="page"><div class="wrap">
+<h2>Magic 8-ball 🎱</h2>
+<p class="hint">Think of a question, then tap the ball.</p>
+<button id="ball" style="font-size:3.5rem;padding:10px 26px;background:var(--card)">🎱</button>
+<div class="out" id="ballOut">The ball is waiting...</div>
+<button class="next" hidden>Next ➜</button>
+</div></section>
+
+<section class="page"><div class="wrap">
+<h2>Date idea spinner 🎡</h2>
+<div class="out" id="spinOut" style="font-size:1.6rem">Spin to see what we do next</div>
+<div class="row"><button id="spin">Spin!</button><button class="next" hidden>Next ➜</button></div>
+</div></section>
+
+<section class="page"><div class="wrap">
 <h2>Our song 🎶</h2>
 <p class="hint" id="songHint">Turn the volume up a little.</p>
 <button id="play" style="background:var(--blue)">▶ Play</button>
@@ -156,12 +190,30 @@ $('start').onclick=()=>{score=0;$('sc').textContent=0;$('arena').innerHTML='';cl
 const facts=["You make ordinary days feel like a better version of themselves.","Your laugh is my favorite sound. Not even close.","You're stronger than whatever today threw at you.","The world is genuinely nicer with you in it.","You're cute when you're happy AND when you're annoyed. Unfair, honestly.","I'm proud of you, even on the days you don't feel proud.","You're the person I want to tell everything to first.","Bad days end. You are the permanent part."];
 let fc=0;$('fact').onclick=()=>{show($('factOut'),pick(facts));if(++fc>=3){unlock(3);$('fact').textContent='Another one'}};
 
-const cp=[["🤗","One extra-long hug"],["🍜","Her favorite food, my treat"],["🎬","Movie night, she picks"],["😘","Kiss in the cheeks"],["🧋","Rejuve run"],["📵","One full evening of undivided attention"]];
+const cp=[["🤗","One extra-long hug"],["🍜","Her favorite food, my treat"],["🎬","Movie night, she picks"],["😘","Kiss in the cheeks"],["🥤","Rejuve run"],["📵","One full evening of undivided attention"]];
 let oc=0;cp.forEach(([e,t])=>{const b=document.createElement('button');b.className='coupon';b.innerHTML='<b>🎟️</b>Tap to open';
 b.onclick=()=>{if(b.classList.contains('open'))return;b.classList.add('open');b.innerHTML='<b>'+e+'</b>'+t;confetti(10);if(++oc>=3){unlock(4);$('cpHint').textContent='Nice! Open the rest or move on.'}};$('coupons').appendChild(b)});
 
 const jokes=["Why did the scarecrow win an award? He was outstanding in his field. 🌾","I'm reading a book on anti-gravity. It's impossible to put down. 📚","What do you call a fake noodle? An impasta. 🍝","Why don't eggs tell jokes? They'd crack each other up. 🥚","I told my cat she's the best. She ignored me, which means she agrees. 🐱","Why did the coffee file a police report? It got mugged. ☕","What do you call a bear with no teeth? A gummy bear. 🐻","Why can't you trust stairs? They're always up to something. 🪜","I used to hate facial hair, but then it grew on me. 🧔","What did the ocean say to the beach? Nothing, it just waved. 🌊","Why did the cookie go to the doctor? It felt crummy. 🍪","I'm on a seafood diet. I see food and I eat it. 🍤","What do you call cheese that isn't yours? Nacho cheese. 🧀","Why did the phone wear glasses? It lost all its contacts. 📱","Why did the banana go to the party? Because it was a-peeling. 🍌","I would tell you a construction joke, but I'm still working on it. 🚧"];
 let jc=0;$('joke').onclick=()=>{show($('jokeOut'),pick(jokes));if(++jc>=2)unlock(5)};
+
+const em=['🐱','🌸','🍓','🦋','🧸'];let first,lock,matched;
+function mem(){const deck=[...em,...em].sort(()=>Math.random()-.5);matched=0;first=null;lock=false;$('memMsg').textContent='Find all 5 pairs.';const g=$('mem');g.innerHTML='';deck.forEach(e=>{const b=document.createElement('button');b.className='mc';b.textContent='❓';b.onclick=()=>flip(b,e);g.appendChild(b)})}
+function flip(b,e){if(lock||b.classList.contains('up'))return;b.classList.add('up');b.textContent=e;if(!first){first=[b,e];return}
+if(first[1]===e){b.classList.add('ok');first[0].classList.add('ok');first=null;if(++matched===5){confetti(50);unlock(6);$('memMsg').textContent='You matched them all! 🏆'}}
+else{lock=true;const a=first[0];first=null;setTimeout(()=>{b.classList.remove('up');a.classList.remove('up');b.textContent=a.textContent='❓';lock=false},700)}}
+$('shuf').onclick=mem;mem();
+
+const Q=[["Best part about dating me? 😏",["Everything","The snacks","My dad jokes"],"Wrong. Just kidding, every answer is right 💛"],["Who's the cutest in this relationship?",["Me","You","Both of us"],"Trick question. It's you. Always you. 💖"],["What should we do next?",["Cuddle","Eat","Cuddle AND eat"],"Perfect answer. Let's do all of it. 🥰"]];
+let qi=0;
+function qshow(){const q=Q[qi];$('qq').textContent=q[0];$('qa').innerHTML='';q[1].forEach(o=>{const b=document.createElement('button');b.textContent=o;b.style.background='var(--blue)';b.onclick=()=>{[...$('qa').children].forEach(x=>x.disabled=true);show($('qr'),q[2]);if(qi<Q.length-1){qi++;setTimeout(qshow,1400)}else{confetti(30);unlock(7)}};$('qa').appendChild(b)})}
+qshow();
+
+const ans=["Yes, obviously. 💛","100% yes, and I'll help you. 💪","Ask me later, I'm busy loving you. 😘","Absolutely. You've got this. ✨","The universe says: hug time. 🤗","Without a doubt. You're amazing. 🌟","Yes! Now go get a snack. 🍫"];
+$('ball').onclick=()=>{const b=$('ball');b.style.animation='none';void b.offsetWidth;b.style.animation='shake .5s';setTimeout(()=>show($('ballOut'),pick(ans)),450);unlock(8)};
+
+const ideas=["Movie night + snacks 🎬","Picnic in the park 🧺","Rejuve date 🥤","Chagee date 🍵","Dessert run 🍰","Game night 🎮","Stargazing ✨","Cook together 🍳","Long walk + photos 📸"];
+let sp=false;$('spin').onclick=()=>{if(sp)return;sp=true;let n=0;const t=setInterval(()=>{$('spinOut').textContent=pick(ideas);if(++n>18){clearInterval(t);sp=false;confetti(25);unlock(9);$('spin').textContent='Spin again'}},110)};
 
 const au=$('song'),miss=()=>{$('songHint').textContent='Song file not found. Add song.mp3 next to index.html.'};
 $('play').onclick=()=>{if(au.paused){au.play().then(()=>{$('play').textContent='⏸ Pause';confetti(20)}).catch(miss)}else{au.pause();$('play').textContent='▶ Play'}};
