@@ -6,92 +6,135 @@
 <title>For Sayang</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;700&display=swap">
 <style>
-:root{--bg:#fff3c4;--ink:#3d1d4e;--pink:#ff7eb6;--blue:#6ec6ff;--mint:#7be0b0;--card:#fff;--shadow:#3d1d4e;
-box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-:root:not([data-theme="light"]){}
+:root{--bg:#fff3c4;--ink:#3d1d4e;--pink:#ff7eb6;--blue:#6ec6ff;--mint:#7be0b0;--card:#fff;--shadow:#3d1d4e}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#2a1538;--ink:#fff3c4;--card:#43245a;--shadow:#000}}
 :root[data-theme="dark"]{--bg:#2a1538;--ink:#fff3c4;--card:#43245a;--shadow:#000}
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:'Fredoka',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:18px;line-height:1.4;overflow-x:hidden}
-main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
-h1{font-size:clamp(2.4rem,11vw,4.6rem);line-height:1;margin:.2em 0 .1em;font-weight:700;text-align:center}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font-family:'Fredoka',system-ui,-apple-system,'Segoe UI',sans-serif;font-size:18px;line-height:1.35;overflow:hidden;display:flex;flex-direction:column;
+padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 14px}
+header button{min-height:40px;padding:6px 14px;font-size:.9rem}
+#dots{display:flex;gap:8px}
+#dots i{width:12px;height:12px;border-radius:50%;border:2px solid var(--shadow);background:var(--card)}
+#dots i.on{background:var(--pink)}
+#dots i.cur{transform:scale(1.35)}
+#stage{flex:1;min-height:0;position:relative}
+.page{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:6px 20px 14px;overflow-y:auto;text-align:center}
+.page.active{display:flex;animation:pop .4s}
+.wrap{width:100%;max-width:880px;display:flex;flex-direction:column;gap:12px;align-items:center}
+h1{font-size:clamp(2.2rem,9vw,4.6rem);line-height:1;margin:0;font-weight:700}
 h1 span{display:inline-block;animation:bob 2.4s ease-in-out infinite}
-@keyframes bob{50%{transform:translateY(-10px) rotate(-3deg)}}
-.sub{text-align:center;margin:0 0 22px;opacity:.85}
-.card{background:var(--card);border:3px solid var(--shadow);border-radius:28px;box-shadow:0 7px 0 var(--shadow);padding:20px;margin:0 0 26px}
-.card h2{margin:0 0 6px;font-size:1.5rem}
-.card p.hint{margin:0 0 14px;opacity:.8;font-size:.95rem}
-button{font:inherit;font-weight:600;color:#3d1d4e;border:3px solid var(--shadow);border-radius:999px;padding:12px 22px;min-height:48px;cursor:pointer;background:var(--pink);box-shadow:0 4px 0 var(--shadow);transition:transform .08s,box-shadow .08s;touch-action:manipulation}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-3deg)}}
+h2{margin:0;font-size:1.6rem}
+p{margin:0}.hint{opacity:.8;font-size:.95rem}
+button{font:inherit;font-weight:600;color:#3d1d4e;border:3px solid var(--shadow);border-radius:999px;padding:12px 24px;min-height:48px;cursor:pointer;background:var(--pink);box-shadow:0 4px 0 var(--shadow);transition:transform .08s,box-shadow .08s;touch-action:manipulation}
 button:active{transform:translateY(4px);box-shadow:0 0 0 var(--shadow)}
 button:focus-visible{outline:4px solid var(--blue);outline-offset:3px}
-.row{display:flex;flex-wrap:wrap;gap:10px}
-.moods button{flex:1 1 120px;background:var(--blue)}
-.out{margin-top:16px;padding:16px;border-radius:20px;background:var(--bg);font-size:1.15rem;min-height:70px;display:flex;align-items:center;justify-content:center;text-align:center}
+.next{background:var(--mint);animation:pop .4s}
+.next[hidden]{display:none}
+.row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:100%}
+.moods button{flex:1 1 150px;background:var(--blue)}
+.out{width:100%;padding:16px;border-radius:20px;background:var(--card);border:3px solid var(--shadow);font-size:1.2rem;min-height:76px;display:flex;align-items:center;justify-content:center}
 .pop{animation:pop .35s}
-@keyframes pop{0%{transform:scale(.7);opacity:0}70%{transform:scale(1.06)}100%{transform:scale(1);opacity:1}}
-#arena{position:relative;height:340px;border-radius:20px;background:linear-gradient(#bfe6ff,#e9f7ff);overflow:hidden;touch-action:manipulation;border:3px solid var(--shadow)}
+@keyframes pop{0%{transform:scale(.8);opacity:0}70%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+.score{display:flex;justify-content:space-between;align-items:center;width:100%;font-weight:600}
+#arena{position:relative;width:100%;height:calc(100dvh - 210px);min-height:150px;max-height:420px;border-radius:20px;background:linear-gradient(#bfe6ff,#e9f7ff);overflow:hidden;border:3px solid var(--shadow);touch-action:manipulation}
 .b{position:absolute;bottom:-70px;width:64px;height:76px;font-size:54px;line-height:76px;text-align:center;user-select:none;cursor:pointer;animation:rise linear forwards}
-@keyframes rise{to{transform:translateY(-440px)}}
+@keyframes rise{to{transform:translateY(var(--h))}}
 .b.x{animation:none;transform:scale(1.8);opacity:0;transition:.25s}
-.score{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;font-weight:600}
-.coupons{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
-.coupon{background:var(--mint);min-height:110px;border-radius:20px;flex-direction:column;font-size:1rem;white-space:normal}
+.coupons{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;width:100%}
+.coupon{background:var(--mint);min-height:96px;border-radius:20px;font-size:1rem;line-height:1.2;padding:8px}
 .coupon.open{background:var(--pink)}
 .coupon b{font-size:2rem;display:block}
 .confetti{position:fixed;top:-20px;font-size:28px;pointer-events:none;z-index:9;animation:fall 2.2s ease-in forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
-.theme{position:fixed;right:12px;top:calc(env(safe-area-inset-top,0px) + 8px);padding:8px 14px;min-height:40px;font-size:.9rem;z-index:5}
-@media (prefers-reduced-motion:reduce){h1 span{animation:none}.b{animation-duration:12s!important}}
+#rot{display:none;position:fixed;inset:0;z-index:50;background:var(--bg);flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:30px}
+#rot .ph{font-size:80px;animation:turn 2s ease-in-out infinite}
+@keyframes turn{0%,20%{transform:rotate(0)}60%,100%{transform:rotate(-90deg)}}
+@media (orientation:portrait){#rot:not(.hide){display:flex}}
+@media (max-height:480px){
+ body{font-size:16px}h1{font-size:2.4rem}h2{font-size:1.3rem}
+ .page{gap:8px;padding:2px 16px 8px}.out{min-height:56px;padding:10px;font-size:1.05rem}
+ .coupon{min-height:72px}.coupon b{font-size:1.5rem}button{min-height:42px;padding:8px 20px}
+ #arena{height:calc(100dvh - 150px)}}
+@media (prefers-reduced-motion:reduce){h1 span,#rot .ph{animation:none}.b{animation-duration:12s!important}}
 </style>
 </head>
 <body>
-<button class="theme" id="theme" aria-label="Toggle dark mode">🌙</button>
-<main>
-<h1><span>Hallow</span> <span style="animation-delay:.3s">Sayang</span> <span style="animation-delay:.6s">💛</span></h1>
-<p class="sub">Bad day? This tiny website exists for one reason: to make you smile.</p>
+<header>
+<button id="back" aria-label="Back" style="visibility:hidden">‹ Back</button>
+<div id="dots"></div>
+<button id="theme" aria-label="Toggle dark mode">🌙</button>
+</header>
+<div id="stage">
 
-<section class="card">
+<section class="page active"><div class="wrap">
+<h1><span>Hallow</span> <span style="animation-delay:.3s">Sayang</span> <span style="animation-delay:.6s">💛</span></h1>
+<p>Bad day? This little website has a few things to make you smile.</p>
+<button class="next" data-always>Let's go ➜</button>
+</div></section>
+
+<section class="page"><div class="wrap">
 <h2>How's the mood?</h2>
-<p class="hint">Tap the one that fits. No wrong answers.</p>
 <div class="row moods">
-<button data-m="0">😤 Grumpy</button>
-<button data-m="1">😢 Sad</button>
-<button data-m="2">😴 Tired</button>
-<button data-m="3">🌀 Just meh</button>
+<button data-m="0">😤 Grumpy</button><button data-m="1">😢 Sad</button><button data-m="2">😴 Tired</button><button data-m="3">🌀 Just meh</button>
 </div>
 <div class="out" id="moodOut">Pick one and I'll respond 💌</div>
-</section>
+<button class="next" hidden>Next ➜</button>
+</div></section>
 
-<section class="card">
-<h2>Pop the balloons 🎈</h2>
-<p class="hint">Pop 15 to unlock a surprise.</p>
-<div class="score"><span>Popped: <b id="sc">0</b>/15</span><button id="start">Start</button></div>
+<section class="page"><div class="wrap">
+<div class="score"><h2>Pop the balloons 🎈</h2><span>Popped: <b id="sc">0</b>/15</span><button id="start">Start</button></div>
 <div id="arena" aria-label="Balloon game area"></div>
-</section>
+<button class="next" hidden>Next ➜</button>
+</div></section>
 
-<section class="card">
+<section class="page"><div class="wrap">
 <h2>Facts (100% true)</h2>
 <button id="fact">Tell me something nice</button>
-<div class="out" id="factOut">Press the button 👆</div>
-</section>
+<div class="out" id="factOut">Tap the button 3 times 👆</div>
+<button class="next" hidden>Next ➜</button>
+</div></section>
 
-<section class="card">
+<section class="page"><div class="wrap">
 <h2>Your coupons 🎟️</h2>
-<p class="hint">Tap to reveal. All valid today, no expiry on love.</p>
+<p class="hint" id="cpHint">Open any 3 to continue.</p>
 <div class="coupons" id="coupons"></div>
-</section>
+<button class="next" hidden>Next ➜</button>
+</div></section>
 
-<section class="card">
+<section class="page"><div class="wrap">
 <h2>Need a laugh?</h2>
 <button id="joke" style="background:var(--mint)">Dad joke please</button>
-<div class="out" id="jokeOut">Brace yourself 😏</div>
-</section>
-</main>
+<div class="out" id="jokeOut">Tap twice 😏</div>
+<button class="next" hidden>Next ➜</button>
+</div></section>
+
+<section class="page"><div class="wrap">
+<h2>Our song 🎶</h2>
+<p class="hint" id="songHint">Turn the volume up a little.</p>
+<button id="play" style="background:var(--blue)">▶ Play</button>
+<audio id="song" src="song.mp3" preload="none" loop></audio>
+<p style="font-size:1.3rem">I love you, Sayang. 💛</p>
+<button class="next" id="again">Start over ↺</button>
+</div></section>
+</div>
+
+<div id="rot"><div class="ph">📱</div><h2>Please rotate to landscape 🔄</h2><p>This site looks best when your phone is sideways.</p><button id="skip">Continue anyway</button></div>
 
 <script>
-const $=id=>document.getElementById(id);
-const pick=a=>a[Math.floor(Math.random()*a.length)];
+const $=id=>document.getElementById(id),pick=a=>a[Math.floor(Math.random()*a.length)];
+const pages=[...document.querySelectorAll('.page')];let cur=0,timer=null;
+pages.forEach((_,i)=>{const d=document.createElement('i');$('dots').appendChild(d)});
+function go(i){cur=i;clearInterval(timer);timer=null;
+ pages.forEach((p,j)=>p.classList.toggle('active',j===i));
+ [...$('dots').children].forEach((d,j)=>{d.classList.toggle('on',j<=i);d.classList.toggle('cur',j===i)});
+ $('back').style.visibility=i>0?'visible':'hidden';
+ if(i===2&&score<15){$('arena').innerHTML=''}}
+function unlock(i){const b=pages[i].querySelector('.next');if(b)b.hidden=false}
+document.querySelectorAll('.next').forEach((b,i)=>b.onclick=()=>{if(b.id==='again'){location.reload();return}go(cur+1)});
+$('back').onclick=()=>go(Math.max(0,cur-1));
 function show(el,t){el.classList.remove('pop');void el.offsetWidth;el.textContent=t;el.classList.add('pop')}
 function confetti(n=40){const e=['🎉','💖','✨','🌸','🎈','💛','⭐'];for(let i=0;i<n;i++){const c=document.createElement('div');c.className='confetti';c.textContent=pick(e);c.style.left=Math.random()*100+'vw';c.style.animationDelay=Math.random()*.8+'s';document.body.appendChild(c);setTimeout(()=>c.remove(),3200)}}
 
@@ -99,27 +142,34 @@ const moods=[
 ["Grumpy is allowed. Stomp around, then come back for a hug. 🤗","Mad Charlene is still the cutest Charlene. Fight me. 😤💛"],
 ["Come here. Big hug incoming. It's okay to feel sad, and I'm not going anywhere. 🫂","Whatever happened, you don't have to carry it alone. I've got you. 💛"],
 ["Rest mode: activated. Blanket, snacks, zero guilt. 🛌","You did enough today. Seriously. Go be a potato. 🥔"],
-["Meh days happen. Let's turn it into a tiny adventure. Try the balloons below! 🎈","Meh is just the universe buffering. You'll be back to sparkling soon. ✨"]
-];
-document.querySelectorAll('.moods button').forEach(b=>b.onclick=()=>show($('moodOut'),pick(moods[b.dataset.m])));
+["Meh days happen. Let's turn it into a tiny adventure. Balloons are next! 🎈","Meh is just the universe buffering. You'll be back to sparkling soon. ✨"]];
+document.querySelectorAll('.moods button').forEach(b=>b.onclick=()=>{show($('moodOut'),pick(moods[b.dataset.m]));unlock(1);confetti(8)});
+
+let score=0;
+function spawn(){const a=$('arena'),b=document.createElement('div');b.className='b';b.textContent=pick(['🎈','🎈','🎈','💖','🌸']);
+b.style.left=Math.random()*(a.clientWidth-64)+'px';b.style.animationDuration=(3.5+Math.random()*2.5)+'s';b.style.setProperty('--h',-(a.clientHeight+100)+'px');
+b.addEventListener('pointerdown',e=>{e.preventDefault();if(b.classList.contains('x'))return;b.classList.add('x');score++;$('sc').textContent=score;setTimeout(()=>b.remove(),250);if(score===15)win()});
+b.addEventListener('animationend',()=>b.remove());a.appendChild(b)}
+function win(){clearInterval(timer);timer=null;confetti(60);$('arena').innerHTML='<div class="out pop" style="height:100%;border:0;background:transparent;font-size:1.4rem;flex-direction:column;color:#000">🏆 You did it, Sayang!<br>You are officially the Balloon Champion and the best girlfriend ever. 💛</div>';unlock(2);$('start').hidden=true}
+$('start').onclick=()=>{score=0;$('sc').textContent=0;$('arena').innerHTML='';clearInterval(timer);timer=setInterval(spawn,550);$('start').textContent='Restart'};
 
 const facts=["You make ordinary days feel like a better version of themselves.","Your laugh is my favorite sound. Not even close.","You're stronger than whatever today threw at you.","The world is genuinely nicer with you in it.","You're cute when you're happy AND when you're annoyed. Unfair, honestly.","I'm proud of you, even on the days you don't feel proud.","You're the person I want to tell everything to first.","Bad days end. You are the permanent part."];
-$('fact').onclick=()=>show($('factOut'),pick(facts));
-
-const jokes=["Why did the scarecrow win an award? He was outstanding in his field. 🌾","I'm reading a book on anti-gravity. It's impossible to put down. 📚","What do you call a fake noodle? An impasta. 🍝","Why don't eggs tell jokes? They'd crack each other up. 🥚","I told my cat she's the best. She ignored me, which means she agrees. 🐱","Why did the coffee file a police report? It got mugged. ☕","What do you call a bear with no teeth? A gummy bear. 🐻","Why can't you trust stairs? They're always up to something. 🪜","I used to hate facial hair, but then it grew on me. 🧔","What did the ocean say to the beach? Nothing, it just waved. 🌊","Why did the cookie go to the doctor? It felt crummy. 🍪","I'm on a seafood diet. I see food and I eat it. 🍤","What do you call cheese that isn't yours? Nacho cheese. 🧀","Why did the phone wear glasses? It lost all its contacts. 📱","What's a pirate's favorite letter? You'd think R, but it's the C. 🏴‍☠️","Why did the banana go to the party? Because it was a-peeling. 🍌","I would tell you a construction joke, but I'm still working on it. 🚧"];
-$('joke').onclick=()=>show($('jokeOut'),pick(jokes));
+let fc=0;$('fact').onclick=()=>{show($('factOut'),pick(facts));if(++fc>=3){unlock(3);$('fact').textContent='Another one'}};
 
 const cp=[["🤗","One extra-long hug"],["🍜","Her favorite food, my treat"],["🎬","Movie night, she picks"],["😘","Kiss in the cheeks"],["🧋","Rejuve run"],["📵","One full evening of undivided attention"]];
-cp.forEach(([e,t])=>{const b=document.createElement('button');b.className='coupon';b.innerHTML='<b>🎟️</b>Tap to open';b.onclick=()=>{b.classList.add('open');b.innerHTML='<b>'+e+'</b>'+t;confetti(12)};$('coupons').appendChild(b)});
+let oc=0;cp.forEach(([e,t])=>{const b=document.createElement('button');b.className='coupon';b.innerHTML='<b>🎟️</b>Tap to open';
+b.onclick=()=>{if(b.classList.contains('open'))return;b.classList.add('open');b.innerHTML='<b>'+e+'</b>'+t;confetti(10);if(++oc>=3){unlock(4);$('cpHint').textContent='Nice! Open the rest or move on.'}};$('coupons').appendChild(b)});
 
-let score=0,timer=null;
-function spawn(){const a=$('arena'),b=document.createElement('div');b.className='b';b.textContent=pick(['🎈','🎈','🎈','💖','🌸']);b.style.left=Math.random()*(a.clientWidth-64)+'px';b.style.animationDuration=(4+Math.random()*3)+'s';
-const hit=e=>{e.preventDefault();if(b.classList.contains('x'))return;b.classList.add('x');score++;$('sc').textContent=score;setTimeout(()=>b.remove(),250);if(score===15)win()};
-b.addEventListener('pointerdown',hit);b.addEventListener('animationend',()=>b.remove());a.appendChild(b)}
-function win(){clearInterval(timer);timer=null;confetti(60);$('arena').innerHTML='<div class="out pop" style="height:100%;font-size:1.4rem;flex-direction:column;background:transparent;color:#000">🏆 You did it, Sayang!<br>You are officially the Balloon Champion and the best girlfriend ever. 💛</div>'}
-$('start').onclick=()=>{score=0;$('sc').textContent=0;$('arena').innerHTML='';clearInterval(timer);timer=setInterval(spawn,600);$('start').textContent='Restart'};
+const jokes=["Why did the scarecrow win an award? He was outstanding in his field. 🌾","I'm reading a book on anti-gravity. It's impossible to put down. 📚","What do you call a fake noodle? An impasta. 🍝","Why don't eggs tell jokes? They'd crack each other up. 🥚","I told my cat she's the best. She ignored me, which means she agrees. 🐱","Why did the coffee file a police report? It got mugged. ☕","What do you call a bear with no teeth? A gummy bear. 🐻","Why can't you trust stairs? They're always up to something. 🪜","I used to hate facial hair, but then it grew on me. 🧔","What did the ocean say to the beach? Nothing, it just waved. 🌊","Why did the cookie go to the doctor? It felt crummy. 🍪","I'm on a seafood diet. I see food and I eat it. 🍤","What do you call cheese that isn't yours? Nacho cheese. 🧀","Why did the phone wear glasses? It lost all its contacts. 📱","Why did the banana go to the party? Because it was a-peeling. 🍌","I would tell you a construction joke, but I'm still working on it. 🚧"];
+let jc=0;$('joke').onclick=()=>{show($('jokeOut'),pick(jokes));if(++jc>=2)unlock(5)};
 
+const au=$('song'),miss=()=>{$('songHint').textContent='Song file not found. Add song.mp3 next to index.html.'};
+$('play').onclick=()=>{if(au.paused){au.play().then(()=>{$('play').textContent='⏸ Pause';confetti(20)}).catch(miss)}else{au.pause();$('play').textContent='▶ Play'}};
+au.addEventListener('error',miss);
+
+$('skip').onclick=()=>$('rot').classList.add('hide');
 $('theme').onclick=()=>{const d=document.documentElement,dark=getComputedStyle(d).getPropertyValue('--bg').trim()==='#2a1538';d.dataset.theme=dark?'light':'dark';$('theme').textContent=dark?'🌙':'☀️'};
+go(0);
 </script>
 </body>
 </html>
